@@ -1,7 +1,7 @@
 ﻿using Tennis.API.Excepcion;
 using Tennis.API.Middlewares.MiddlewaresService.Interfaces;
 
-namespace EscuelaDotNetAbril2024.API.Middlewares
+namespace Tennis.API.Middlewares
 {
     public class CustomMiddleware
     {

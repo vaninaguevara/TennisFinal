@@ -1,6 +1,6 @@
 ﻿﻿using System.ComponentModel.DataAnnotations;
 
-namespace EscuelaDotNetAbril2024.API.Models.Request
+namespace Tennis.API.Models.Request
 {
     public class RefreshTokenRequest
     {

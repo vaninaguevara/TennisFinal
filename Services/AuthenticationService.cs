@@ -15,10 +15,10 @@ namespace Tennis.API.Services
         private readonly AuthenticationOptions _authenticationOptions;
         private readonly TennisContext _context;
 
-        public AuthenticationService(AuthenticationOptions authenticationOptions, TennisContext escuelaContext)
+        public AuthenticationService(AuthenticationOptions authenticationOptions, TennisContext tennisContext)
         {
             _authenticationOptions = authenticationOptions;
-            _context = escuelaContext;
+            _context = tennisContext;
         }
 
         public TokenResponse GenerateToken(Usuario usuario)

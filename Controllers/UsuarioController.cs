@@ -1,10 +1,8 @@
-﻿
-
-using EscuelaDotNetAbril2024.API.Models.Request;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tennis.API.Models.Request;
 using Tennis.API.Services.Interfaces;
 using Tennis.Services.Interfaces;
+using Tennis.API.Models.Request;
 
 namespace Tennis.Controllers
 {

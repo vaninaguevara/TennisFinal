@@ -1,23 +1,43 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tennis.Models
 {
     public class Jugador
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
+        public int Dni { get; set; }
         public string Nombre { get; set; }
-        [Required]
         public string Apellido { get; set; }
         public DateTime Nacimiento { get; set; }
-        [Required]
         public string Genero { get; set; }
+        public int Habilidad { get; set; }
+        public int Suerte { get; set; }
         public int Fuerza { get; set; }
         public int Velocidad { get; set; }
-        public int Suerte { get; set; }
         public int Reaccion { get; set; }
         public bool Activo { get; set; }
+    }
+    public class JugadorConfig : IEntityTypeConfiguration<Jugador>
+    {
+        public void Configure(EntityTypeBuilder<Jugador> builder)
+        {
+            builder.ToTable("Jugador");
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasColumnName("Id").ValueGeneratedOnAdd().IsRequired();
+            builder.Property(x => x.Dni).HasColumnName("Dni").IsRequired();
+            builder.Property(x => x.Nombre).HasColumnName("Nombre").IsRequired();
+            builder.Property(x => x.Apellido).HasColumnName("Apellido").IsRequired();
+            builder.Property(x => x.Nacimiento).HasColumnName("Nacimiento").IsRequired();
+            builder.Property(x => x.Genero).HasColumnName("Genero").IsRequired();
+            builder.Property(x => x.Habilidad).HasColumnName("Habilidad").IsRequired();
+            builder.Property(x => x.Suerte).HasColumnName("Suerte");
+            builder.Property(x => x.Fuerza).HasColumnName("Fuerza");
+            builder.Property(x => x.Velocidad).HasColumnName("Velocidad");
+            builder.Property(x => x.Reaccion).HasColumnName("Reaccion");
+            builder.Property(x => x.Activo).HasColumnName("Activo").IsRequired();
+        }
     }
 }

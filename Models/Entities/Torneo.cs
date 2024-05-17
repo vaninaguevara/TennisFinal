@@ -12,10 +12,11 @@ namespace Tennis.Models
         public int Id { get; set; }
         [Required]
         public string Nombre { get; set; }
-        public int CreatedByUserId { get; set; }
+        public int? CreatedByUserId { get; set; }
         public string Genero { get; set; }
         public List<TorneoJugador> TorneoJugador { get; set; }
-        public bool Termino { get; set; }
+        public bool? Termino { get; set; }
+        public DateTime? FechaTermino { get; set; }
     }
     public class TorneoConfig : IEntityTypeConfiguration<Torneo>
     {
@@ -33,8 +34,9 @@ namespace Tennis.Models
 
             builder.Property(t => t.Genero).HasColumnName("Genero").HasMaxLength(10);
 
+            builder.Property(t => t.FechaTermino).HasColumnName("FechaTermino");
 
-            builder.Property(t => t.Termino).HasColumnName("Termino").HasDefaultValueSql("(0)");
+            builder.Property(t => t.Termino).HasColumnName("Termino").HasDefaultValueSql("0");
 
             builder.HasMany(t => t.TorneoJugador)
                    .WithOne()

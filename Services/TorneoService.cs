@@ -100,5 +100,31 @@ namespace Tennis.Services
             int puntaje = jugador.Habilidad + jugador.Fuerza + jugador.Velocidad;
             return puntaje;
         }
+        public TorneoJugador SimularEnfrentamientoFem(TorneoJugador jug1, TorneoJugador jug2)
+        {
+            int puntaje1 = CalcularPuntajeFem(jug1.Jugador);
+            int puntaje2 = CalcularPuntajeFem(jug2.Jugador);
+            if (jug1.Jugador.Suerte > jug2.Jugador.Suerte)
+            {
+                puntaje1 += 1;
+            }
+            else
+            {
+                puntaje2 += 1;
+            }
+            return puntaje1 > puntaje2 ? jug1 : jug2;
+        }
+        private int CalcularPuntajeFem(Jugador jugador)
+        {
+            int puntaje = jugador.Habilidad + jugador.Reaccion;
+            return puntaje;
+        }
+
+        public async Task<List<Torneo>> GetTorneosByFecha(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            List<Torneo> torneos = await _tennisContext.Set<Torneo>().Where(t => t.FechaTermino >= fechaDesde && t.FechaTermino <= fechaHasta).ToListAsync();
+            return torneos;
+        }
+
     }
 }

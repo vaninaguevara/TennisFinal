@@ -12,13 +12,12 @@ namespace Tennis.Models
         public int IdTorneo { get; set; }
         [ForeignKey(nameof(IdTorneo))]
         public virtual Torneo Torneo { get; set; }
-        public int IdJugador1 { get; set; }
-        [ForeignKey(nameof(IdJugador1))]
-        public Jugador Jugador1 { get; set; }
-        public int IdJugador2 { get; set; }
-        [ForeignKey(nameof(IdJugador2))]
-        public Jugador Jugador2 { get; set; }
-        public string? Resultado { get; set; }
+        public int IdJugadorL { get; set; }
+        [ForeignKey(nameof(IdJugadorL))]
+        public Jugador JugadorL { get; set; }
+        public int IdJugadorW { get; set; }
+        [ForeignKey(nameof(IdJugadorW))]
+        public Jugador JugadorW { get; set; }
     }
     public class PartidoConfig : IEntityTypeConfiguration<Partido>
     {
@@ -29,23 +28,22 @@ namespace Tennis.Models
 
             builder.Property(x => x.Id).HasColumnName("Id").ValueGeneratedOnAdd().IsRequired();
             builder.Property(x => x.IdTorneo).HasColumnName("IdTorneo").IsRequired();
-            builder.Property(x => x.IdJugador1).HasColumnName("IdJugador1").IsRequired();
-            builder.Property(x => x.IdJugador2).HasColumnName("IdJugador2").IsRequired();
-            builder.Property(x => x.Resultado).HasColumnName("Resultado");
+            builder.Property(x => x.IdJugadorL).HasColumnName("IdJugadorL").IsRequired();
+            builder.Property(x => x.IdJugadorW).HasColumnName("IdJugadorW").IsRequired();
 
             builder.HasOne(p => p.Torneo)
                    .WithMany()
                    .HasForeignKey(p => p.IdTorneo)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.Jugador1)
+            builder.HasOne(p => p.JugadorL)
                    .WithMany() 
-                   .HasForeignKey(p => p.IdJugador1)
+                   .HasForeignKey(p => p.IdJugadorL)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Jugador2)
+            builder.HasOne(p => p.JugadorW)
                    .WithMany() 
-                   .HasForeignKey(p => p.IdJugador2)
+                   .HasForeignKey(p => p.IdJugadorW)
                    .OnDelete(DeleteBehavior.Restrict); 
 
         }

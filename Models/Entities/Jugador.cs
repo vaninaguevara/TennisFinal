@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Tennis.Models.Entities;
 
 namespace Tennis.Models
 {
@@ -19,6 +20,7 @@ namespace Tennis.Models
         public int Velocidad { get; set; }
         public int Reaccion { get; set; }
         public bool Activo { get; set; }
+        public virtual TorneoJugador TorneoJugador { get; set; }
     }
     public class JugadorConfig : IEntityTypeConfiguration<Jugador>
     {

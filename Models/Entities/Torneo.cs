@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Tennis.Models.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tennis.Models
 {
@@ -14,9 +15,12 @@ namespace Tennis.Models
         public string Nombre { get; set; }
         public int? CreatedByUserId { get; set; }
         public string Genero { get; set; }
-        public List<TorneoJugador> TorneoJugador { get; set; }
-        public bool? Termino { get; set; }
+        public List<TorneoJugador>? TorneoJugador { get; set; }
+        public virtual List<Partido>? Partido { get; set; }
         public DateTime? FechaTermino { get; set; }
+        public int? IdJugadorW { get; set; }
+        [ForeignKey(nameof(IdJugadorW))]
+        public virtual Jugador? JugadorW { get; set; }
     }
     public class TorneoConfig : IEntityTypeConfiguration<Torneo>
     {
@@ -36,12 +40,14 @@ namespace Tennis.Models
 
             builder.Property(t => t.FechaTermino).HasColumnName("FechaTermino");
 
-            builder.Property(t => t.Termino).HasColumnName("Termino").HasDefaultValueSql("0");
-
             builder.HasMany(t => t.TorneoJugador)
                    .WithOne()
                    .HasForeignKey("IdTorneo")
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(t => t.JugadorW)
+                .WithOne()
+                .HasForeignKey("IdJugadorW");
         }
     }
 }

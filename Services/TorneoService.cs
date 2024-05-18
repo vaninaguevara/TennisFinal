@@ -63,7 +63,12 @@ namespace Tennis.Services
                     var jugador2 = torneoJugador[i + 1];
 
                     var ganadorEnfrentamiento = SimularEnfrentamientoMasculino(jugador1, jugador2);
-
+                    var partido = new Partido();
+                    partido.IdTorneo = torneo.Id;
+                    partido.IdJugadorL = ganadorEnfrentamiento.JugadorId == jugador1.JugadorId ? jugador2.JugadorId : jugador1.JugadorId;
+                    partido.IdJugadorW = ganadorEnfrentamiento.JugadorId;
+                    _tennisContext.Set<Partido>().Add(partido);
+                    _tennisContext.SaveChanges();
                     ganadoresRonda.Add(ganadorEnfrentamiento);
                 }
                 torneoJugador = ganadoresRonda;
@@ -122,7 +127,13 @@ namespace Tennis.Services
 
         public async Task<List<Torneo>> GetTorneosByFecha(DateTime fechaDesde, DateTime fechaHasta)
         {
-            List<Torneo> torneos = await _tennisContext.Set<Torneo>().Where(t => t.FechaTermino >= fechaDesde && t.FechaTermino <= fechaHasta).ToListAsync();
+            List<Torneo> torneos = await _tennisContext.Set<Torneo>()
+                .Where(t => t.FechaTermino >= fechaDesde && t.FechaTermino <= fechaHasta)
+                .Include(t => t.TorneoJugador).ThenInclude(e => e.Jugador)
+                .Include(e => e.JugadorW)
+                .Include(e => e.Partido)
+                .AsNoTracking()
+                .ToListAsync();
             return torneos;
         }
 

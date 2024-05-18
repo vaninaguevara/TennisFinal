@@ -39,14 +39,12 @@ namespace Tennis.Models.Entities
                 .IsRequired();
 
             builder.HasOne(tj => tj.Jugador)
-                   .WithMany() 
-                   .HasForeignKey(tj => tj.JugadorId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .WithMany()
+                   .HasForeignKey(tj => tj.JugadorId);
 
             builder.HasOne(tj => tj.Torneo)
                    .WithMany()
-                   .HasForeignKey(tj => tj.IdTorneo)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .HasForeignKey(tj => tj.IdTorneo);
         }
     }
 }

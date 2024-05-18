@@ -54,9 +54,9 @@ namespace Tennis.Controllers
             }
 
             var torneo = actionResult.Value;
-            if (torneo == null)
+            if (torneo?.JugadorW != null)
             {
-                return NotFound($"El torneo con id '{id}' no existe.");
+                return NotFound($"El torneo ya termino, el ganador es {torneo.JugadorW.Nombre + " " + torneo.JugadorW.Apellido}");
             }
             TorneoTerminadoResponse response = await _torneoService.IniciarTorneo(torneo);
             return response;

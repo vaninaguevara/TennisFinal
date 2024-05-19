@@ -7,15 +7,12 @@ namespace Tennis.Models.Entities
 {
     public class TorneoJugador
     {
-        [Key]
         public int Id { get; set; }
 
-        public int JugadorId { get; set; }
-        [ForeignKey(nameof(JugadorId))]
+        public int IdJugador { get; set; }
         public virtual Jugador Jugador { get; set; }
 
         public int IdTorneo { get; set; }
-        [ForeignKey(nameof(IdTorneo))]
         public virtual Torneo Torneo { get; set; }
     }
     public class TorneoJugadorConfig : IEntityTypeConfiguration<TorneoJugador>
@@ -30,8 +27,8 @@ namespace Tennis.Models.Entities
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 
-            builder.Property(tj => tj.JugadorId)
-                .HasColumnName("JugadorId")
+            builder.Property(tj => tj.IdJugador)
+                .HasColumnName("IdJugador")
                 .IsRequired();
 
             builder.Property(tj => tj.IdTorneo)
@@ -40,11 +37,13 @@ namespace Tennis.Models.Entities
 
             builder.HasOne(tj => tj.Jugador)
                    .WithMany()
-                   .HasForeignKey(tj => tj.JugadorId);
+                   .HasForeignKey(tj => tj.IdJugador)
+                   .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(tj => tj.Torneo)
                    .WithMany()
-                   .HasForeignKey(tj => tj.IdTorneo);
+                   .HasForeignKey(tj => tj.IdTorneo)
+                   .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

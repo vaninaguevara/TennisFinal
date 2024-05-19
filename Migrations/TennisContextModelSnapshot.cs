@@ -31,18 +31,23 @@ namespace Tennis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("IdJugador")
+                        .HasColumnType("int")
+                        .HasColumnName("IdJugador");
+
                     b.Property<int>("IdTorneo")
                         .HasColumnType("int")
                         .HasColumnName("IdTorneo");
 
                     b.Property<int>("JugadorId")
-                        .HasColumnType("int")
-                        .HasColumnName("JugadorId");
+                        .HasColumnType("int");
 
                     b.Property<int>("TorneoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdJugador");
 
                     b.HasIndex("IdTorneo");
 
@@ -123,29 +128,30 @@ namespace Tennis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IdJugador1")
+                    b.Property<int>("IdJugadorL")
                         .HasColumnType("int")
-                        .HasColumnName("IdJugador1");
+                        .HasColumnName("IdJugadorL");
 
-                    b.Property<int>("IdJugador2")
+                    b.Property<int>("IdJugadorW")
                         .HasColumnType("int")
-                        .HasColumnName("IdJugador2");
+                        .HasColumnName("IdJugadorW");
 
                     b.Property<int>("IdTorneo")
                         .HasColumnType("int")
                         .HasColumnName("IdTorneo");
 
-                    b.Property<string>("Resultado")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Resultado");
+                    b.Property<int?>("TorneoId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdJugador1");
+                    b.HasIndex("IdJugadorL");
 
-                    b.HasIndex("IdJugador2");
+                    b.HasIndex("IdJugadorW");
 
                     b.HasIndex("IdTorneo");
+
+                    b.HasIndex("TorneoId");
 
                     b.ToTable("Partido", (string)null);
                 });
@@ -159,9 +165,14 @@ namespace Tennis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreatedByUserId")
+                    b.Property<int?>("CreatedByUserId")
+                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("CreatedByUserId");
+
+                    b.Property<DateTime?>("FechaTermino")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("FechaTermino");
 
                     b.Property<string>("Genero")
                         .IsRequired()
@@ -169,19 +180,23 @@ namespace Tennis.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasColumnName("Genero");
 
+                    b.Property<int?>("IdJugadorW")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("JugadorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("Nombre");
 
-                    b.Property<bool>("Termino")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasColumnName("Termino")
-                        .HasDefaultValueSql("(0)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("IdJugadorW");
+
+                    b.HasIndex("JugadorId");
 
                     b.ToTable("Torneo", (string)null);
                 });
@@ -224,10 +239,16 @@ namespace Tennis.Migrations
 
             modelBuilder.Entity("Tennis.Models.Entities.TorneoJugador", b =>
                 {
+                    b.HasOne("Tennis.Models.Jugador", null)
+                        .WithMany("TorneoJugador")
+                        .HasForeignKey("IdJugador")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Tennis.Models.Torneo", null)
                         .WithMany("TorneoJugador")
                         .HasForeignKey("IdTorneo")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Tennis.Models.Jugador", "Jugador")
@@ -249,15 +270,15 @@ namespace Tennis.Migrations
 
             modelBuilder.Entity("Tennis.Models.Partido", b =>
                 {
-                    b.HasOne("Tennis.Models.Jugador", "Jugador1")
+                    b.HasOne("Tennis.Models.Jugador", "JugadorL")
                         .WithMany()
-                        .HasForeignKey("IdJugador1")
+                        .HasForeignKey("IdJugadorL")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tennis.Models.Jugador", "Jugador2")
+                    b.HasOne("Tennis.Models.Jugador", "JugadorW")
                         .WithMany()
-                        .HasForeignKey("IdJugador2")
+                        .HasForeignKey("IdJugadorW")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -267,15 +288,42 @@ namespace Tennis.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Jugador1");
+                    b.HasOne("Tennis.Models.Torneo", null)
+                        .WithMany("Partido")
+                        .HasForeignKey("TorneoId");
 
-                    b.Navigation("Jugador2");
+                    b.Navigation("JugadorL");
+
+                    b.Navigation("JugadorW");
 
                     b.Navigation("Torneo");
                 });
 
             modelBuilder.Entity("Tennis.Models.Torneo", b =>
                 {
+                    b.HasOne("Tennis.Models.Jugador", "JugadorW")
+                        .WithMany()
+                        .HasForeignKey("IdJugadorW")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Tennis.Models.Jugador", null)
+                        .WithMany("Torneo")
+                        .HasForeignKey("JugadorId");
+
+                    b.Navigation("JugadorW");
+                });
+
+            modelBuilder.Entity("Tennis.Models.Jugador", b =>
+                {
+                    b.Navigation("Torneo");
+
+                    b.Navigation("TorneoJugador");
+                });
+
+            modelBuilder.Entity("Tennis.Models.Torneo", b =>
+                {
+                    b.Navigation("Partido");
+
                     b.Navigation("TorneoJugador");
                 });
 #pragma warning restore 612, 618

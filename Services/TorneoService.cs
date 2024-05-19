@@ -18,13 +18,13 @@ namespace Tennis.Services
             _tennisContext = tennisContext;
         }
 
-        public async Task<bool> CreateTorneo(Torneo torneo)
+        public async Task<bool> CreateTorneo(Torneo torneo, int userId)
         {
             if (torneo.TorneoJugador == null || !TorneoValidation.IsPowerOfTwo(torneo.TorneoJugador.Count))
             {
                 throw new BadHttpRequestException("La cantidad de jugadores debe ser una potencia de dos.");
             }
-
+            torneo.CreatedByUserId = userId;
             _tennisContext.Set<Torneo>().Add(torneo);
             int resp =  await _tennisContext.SaveChangesAsync() ;
 
@@ -65,8 +65,8 @@ namespace Tennis.Services
                     var ganadorEnfrentamiento = SimularEnfrentamientoMasculino(jugador1, jugador2);
                     var partido = new Partido();
                     partido.IdTorneo = torneo.Id;
-                    partido.IdJugadorL = ganadorEnfrentamiento.JugadorId == jugador1.JugadorId ? jugador2.JugadorId : jugador1.JugadorId;
-                    partido.IdJugadorW = ganadorEnfrentamiento.JugadorId;
+                    partido.IdJugadorL = ganadorEnfrentamiento.IdJugador == jugador1.IdJugador ? jugador2.IdJugador : jugador1.IdJugador;
+                    partido.IdJugadorW = ganadorEnfrentamiento.IdJugador;
                     _tennisContext.Set<Partido>().Add(partido);
                     _tennisContext.SaveChanges();
                     ganadoresRonda.Add(ganadorEnfrentamiento);
@@ -75,7 +75,7 @@ namespace Tennis.Services
             }
 
             var ganador = new TorneoTerminadoResponse();
-            ganador.IdJugador = torneoJugador[0].JugadorId;
+            ganador.IdJugador = torneoJugador[0].IdJugador;
             ganador.JugadorGanador = torneoJugador[0].Jugador;
             return ganador;
         }

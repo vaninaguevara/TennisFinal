@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Tennis.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraMigración : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,22 +35,6 @@ namespace Tennis.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Torneo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
-                    Genero = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Termino = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(0)")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Torneo", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Usuario",
                 columns: table => new
                 {
@@ -68,28 +52,57 @@ namespace Tennis.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Torneo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    Genero = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    FechaTermino = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdJugadorW = table.Column<int>(type: "int", nullable: true),
+                    JugadorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Torneo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Torneo_Jugador_IdJugadorW",
+                        column: x => x.IdJugadorW,
+                        principalTable: "Jugador",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Torneo_Jugador_JugadorId",
+                        column: x => x.JugadorId,
+                        principalTable: "Jugador",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Partido",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdTorneo = table.Column<int>(type: "int", nullable: false),
-                    IdJugador1 = table.Column<int>(type: "int", nullable: false),
-                    IdJugador2 = table.Column<int>(type: "int", nullable: false),
-                    Resultado = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    IdJugadorL = table.Column<int>(type: "int", nullable: false),
+                    IdJugadorW = table.Column<int>(type: "int", nullable: false),
+                    TorneoId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Partido", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Partido_Jugador_IdJugador1",
-                        column: x => x.IdJugador1,
+                        name: "FK_Partido_Jugador_IdJugadorL",
+                        column: x => x.IdJugadorL,
                         principalTable: "Jugador",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Partido_Jugador_IdJugador2",
-                        column: x => x.IdJugador2,
+                        name: "FK_Partido_Jugador_IdJugadorW",
+                        column: x => x.IdJugadorW,
                         principalTable: "Jugador",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -99,6 +112,11 @@ namespace Tennis.Migrations
                         principalTable: "Torneo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Partido_Torneo_TorneoId",
+                        column: x => x.TorneoId,
+                        principalTable: "Torneo",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -107,6 +125,7 @@ namespace Tennis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IdJugador = table.Column<int>(type: "int", nullable: false),
                     JugadorId = table.Column<int>(type: "int", nullable: false),
                     IdTorneo = table.Column<int>(type: "int", nullable: false),
                     TorneoId = table.Column<int>(type: "int", nullable: false)
@@ -114,6 +133,11 @@ namespace Tennis.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TorneoJugador", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TorneoJugador_Jugador_IdJugador",
+                        column: x => x.IdJugador,
+                        principalTable: "Jugador",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TorneoJugador_Jugador_JugadorId",
                         column: x => x.JugadorId,
@@ -124,8 +148,7 @@ namespace Tennis.Migrations
                         name: "FK_TorneoJugador_Torneo_IdTorneo",
                         column: x => x.IdTorneo,
                         principalTable: "Torneo",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TorneoJugador_Torneo_TorneoId",
                         column: x => x.TorneoId,
@@ -135,19 +158,39 @@ namespace Tennis.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Partido_IdJugador1",
+                name: "IX_Partido_IdJugadorL",
                 table: "Partido",
-                column: "IdJugador1");
+                column: "IdJugadorL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Partido_IdJugador2",
+                name: "IX_Partido_IdJugadorW",
                 table: "Partido",
-                column: "IdJugador2");
+                column: "IdJugadorW");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Partido_IdTorneo",
                 table: "Partido",
                 column: "IdTorneo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Partido_TorneoId",
+                table: "Partido",
+                column: "TorneoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Torneo_IdJugadorW",
+                table: "Torneo",
+                column: "IdJugadorW");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Torneo_JugadorId",
+                table: "Torneo",
+                column: "JugadorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TorneoJugador_IdJugador",
+                table: "TorneoJugador",
+                column: "IdJugador");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TorneoJugador_IdTorneo",
@@ -178,10 +221,10 @@ namespace Tennis.Migrations
                 name: "Usuario");
 
             migrationBuilder.DropTable(
-                name: "Jugador");
+                name: "Torneo");
 
             migrationBuilder.DropTable(
-                name: "Torneo");
+                name: "Jugador");
         }
     }
 }

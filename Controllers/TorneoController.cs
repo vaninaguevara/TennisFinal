@@ -23,7 +23,8 @@ namespace Tennis.Controllers
         {
             if(torneo.GetType() == typeof(Torneo))
             {
-                var response = await _torneoService.CreateTorneo(torneo);
+                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                var response = await _torneoService.CreateTorneo(torneo, int.Parse(userId));
                 return CreatedAtAction(nameof(GetTorneo), new { id = torneo.Id }, torneo);
             }
             else

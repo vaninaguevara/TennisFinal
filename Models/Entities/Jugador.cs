@@ -20,7 +20,8 @@ namespace Tennis.Models
         public int Velocidad { get; set; }
         public int Reaccion { get; set; }
         public bool Activo { get; set; }
-        public virtual TorneoJugador TorneoJugador { get; set; }
+        public virtual List<TorneoJugador>? TorneoJugador { get; set; }
+        public virtual List<Torneo>? Torneo { get; set; }
     }
     public class JugadorConfig : IEntityTypeConfiguration<Jugador>
     {
@@ -40,6 +41,16 @@ namespace Tennis.Models
             builder.Property(x => x.Velocidad).HasColumnName("Velocidad");
             builder.Property(x => x.Reaccion).HasColumnName("Reaccion");
             builder.Property(x => x.Activo).HasColumnName("Activo").IsRequired();
+
+            builder.HasMany(j => j.Torneo)
+                   .WithOne(t => t.JugadorW)
+                   .HasForeignKey(t => t.IdJugadorW)
+                   .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(j => j.TorneoJugador)
+                    .WithOne()
+                    .HasForeignKey("IdJugador")
+                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -36,9 +36,9 @@ namespace Tennis.Models
                    .HasForeignKey(p => p.IdTorneo)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(p => p.JugadorL)
-                   .WithMany() 
+            builder.HasOne(p => p.JugadorL).WithOne(i => i.Id)
                    .HasForeignKey(p => p.IdJugadorL)
+                   .HasConstraintName("FK_IdJugador")
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.JugadorW)

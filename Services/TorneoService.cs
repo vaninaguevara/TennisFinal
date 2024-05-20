@@ -35,15 +35,15 @@ namespace Tennis.Services
             }
             torneo.TorneoJugador.ForEach((tj) =>
             {
-                var jugador = _tennisContext.Set<Jugador>().Where((e) => e.Dni == tj.IdJugador).FirstOrDefault();
+                var jugador = _tennisContext.Set<Jugador>().Where((e) => e.Dni == tj.JugadorId).FirstOrDefault();
                 if (jugador != null)
                 {
                     if(jugador.Genero.ToLower().Trim() != torneo.Genero.ToLower().Trim())
-                    throw new BadHttpRequestException($"El dni '{tj.IdJugador}' no corresponde al genero del torneo");
+                    throw new BadHttpRequestException($"El dni '{tj.JugadorId}' no corresponde al genero del torneo");
                 }
                 else
                 {
-                    throw new BadHttpRequestException($"El dni '{tj.IdJugador}' no existe o no es válido");
+                    throw new BadHttpRequestException($"El dni '{tj.JugadorId}' no existe o no es válido");
                 }
             });
             _tennisContext.Set<Torneo>().Attach(torneo);
@@ -91,8 +91,8 @@ namespace Tennis.Services
                     var ganadorEnfrentamiento = SimularEnfrentamientoMasculino(jugador1, jugador2);
                     var partido = new Partido();
                     partido.IdTorneo = torneo.Id;
-                    partido.IdJugadorL = ganadorEnfrentamiento.IdJugador == jugador1.IdJugador ? jugador2.IdJugador : jugador1.IdJugador;
-                    partido.IdJugadorW = ganadorEnfrentamiento.IdJugador;
+                    partido.IdJugadorL = ganadorEnfrentamiento.JugadorId == jugador1.JugadorId ? jugador2.JugadorId : jugador1.JugadorId;
+                    partido.IdJugadorW = ganadorEnfrentamiento.JugadorId;
                     _tennisContext.Set<Partido>().Add(partido);
                     _tennisContext.SaveChanges();
                     ganadoresRonda.Add(ganadorEnfrentamiento);
@@ -101,7 +101,7 @@ namespace Tennis.Services
             }
 
             var ganador = new TorneoTerminadoResponse();
-            ganador.IdJugador = torneoJugador[0].IdJugador;
+            ganador.IdJugador = torneoJugador[0].JugadorId;
             ganador.JugadorGanador = torneoJugador[0].Jugador;
             return ganador;
         }

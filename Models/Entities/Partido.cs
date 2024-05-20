@@ -32,7 +32,7 @@ namespace Tennis.Models
             builder.Property(x => x.IdJugadorW).HasColumnName("IdJugadorW").IsRequired();
 
             builder.HasOne(p => p.Torneo)
-                   .WithMany()
+                   .WithMany(p => p.Partido)
                    .HasForeignKey(p => p.IdTorneo)
                    .OnDelete(DeleteBehavior.Cascade);
 

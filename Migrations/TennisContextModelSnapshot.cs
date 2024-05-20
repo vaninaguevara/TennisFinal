@@ -31,29 +31,29 @@ namespace Tennis.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("IdJugador")
-                        .HasColumnType("int")
-                        .HasColumnName("IdJugador");
-
-                    b.Property<int>("IdTorneo")
-                        .HasColumnType("int")
-                        .HasColumnName("IdTorneo");
-
                     b.Property<int>("JugadorId")
+                        .HasColumnType("int")
+                        .HasColumnName("JugadorId");
+
+                    b.Property<int?>("JugadorId1")
                         .HasColumnType("int");
 
                     b.Property<int>("TorneoId")
+                        .HasColumnType("int")
+                        .HasColumnName("TorneoId");
+
+                    b.Property<int?>("TorneoId1")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdJugador");
-
-                    b.HasIndex("IdTorneo");
-
                     b.HasIndex("JugadorId");
 
+                    b.HasIndex("JugadorId1");
+
                     b.HasIndex("TorneoId");
+
+                    b.HasIndex("TorneoId1");
 
                     b.ToTable("TorneoJugador", (string)null);
                 });
@@ -241,27 +241,25 @@ namespace Tennis.Migrations
                 {
                     b.HasOne("Tennis.Models.Jugador", null)
                         .WithMany("TorneoJugador")
-                        .HasForeignKey("IdJugador")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Tennis.Models.Torneo", null)
-                        .WithMany("TorneoJugador")
-                        .HasForeignKey("IdTorneo")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("JugadorId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("FK_Jugador");
 
                     b.HasOne("Tennis.Models.Jugador", "Jugador")
                         .WithMany()
-                        .HasForeignKey("JugadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("JugadorId1");
+
+                    b.HasOne("Tennis.Models.Torneo", null)
+                        .WithMany("TorneoJugador")
+                        .HasForeignKey("TorneoId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("FK_Torneo");
 
                     b.HasOne("Tennis.Models.Torneo", "Torneo")
                         .WithMany()
-                        .HasForeignKey("TorneoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TorneoId1");
 
                     b.Navigation("Jugador");
 

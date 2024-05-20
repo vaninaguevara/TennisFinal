@@ -21,6 +21,7 @@ namespace Tennis.Models
     }
     public class TorneoConfig : IEntityTypeConfiguration<Torneo>
     {
+
         public void Configure(EntityTypeBuilder<Torneo> builder)
         {
             builder.ToTable("Torneo");
@@ -37,10 +38,10 @@ namespace Tennis.Models
 
             builder.Property(t => t.FechaTermino).HasColumnName("FechaTermino");
 
-            builder.HasMany(t => t.TorneoJugador)
-                   .WithOne()
-                   .HasForeignKey("IdTorneo")
-                   .OnDelete(DeleteBehavior.NoAction);
+         //   builder.HasMany(t => t.TorneoJugador)
+         //          .WithOne()
+          //         .HasForeignKey("TorneoId")
+          //         .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(t => t.JugadorW)
                                .WithMany() 

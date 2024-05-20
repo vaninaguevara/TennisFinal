@@ -125,36 +125,36 @@ namespace Tennis.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdJugador = table.Column<int>(type: "int", nullable: false),
                     JugadorId = table.Column<int>(type: "int", nullable: false),
-                    IdTorneo = table.Column<int>(type: "int", nullable: false),
-                    TorneoId = table.Column<int>(type: "int", nullable: false)
+                    JugadorId1 = table.Column<int>(type: "int", nullable: true),
+                    TorneoId = table.Column<int>(type: "int", nullable: false),
+                    TorneoId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TorneoJugador", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TorneoJugador_Jugador_IdJugador",
-                        column: x => x.IdJugador,
-                        principalTable: "Jugador",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TorneoJugador_Jugador_JugadorId",
+                        name: "FK_Jugador",
                         column: x => x.JugadorId,
                         principalTable: "Jugador",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_TorneoJugador_Torneo_IdTorneo",
-                        column: x => x.IdTorneo,
-                        principalTable: "Torneo",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TorneoJugador_Torneo_TorneoId",
+                        name: "FK_Torneo",
                         column: x => x.TorneoId,
                         principalTable: "Torneo",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_TorneoJugador_Jugador_JugadorId1",
+                        column: x => x.JugadorId1,
+                        principalTable: "Jugador",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TorneoJugador_Torneo_TorneoId1",
+                        column: x => x.TorneoId1,
+                        principalTable: "Torneo",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -188,24 +188,24 @@ namespace Tennis.Migrations
                 column: "JugadorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TorneoJugador_IdJugador",
-                table: "TorneoJugador",
-                column: "IdJugador");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TorneoJugador_IdTorneo",
-                table: "TorneoJugador",
-                column: "IdTorneo");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TorneoJugador_JugadorId",
                 table: "TorneoJugador",
                 column: "JugadorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TorneoJugador_JugadorId1",
+                table: "TorneoJugador",
+                column: "JugadorId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TorneoJugador_TorneoId",
                 table: "TorneoJugador",
                 column: "TorneoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TorneoJugador_TorneoId1",
+                table: "TorneoJugador",
+                column: "TorneoId1");
         }
 
         /// <inheritdoc />

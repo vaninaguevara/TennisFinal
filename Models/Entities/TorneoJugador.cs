@@ -43,7 +43,7 @@ namespace Tennis.Models.Entities
                    .HasForeignKey(tj => tj.JugadorId)
                    .HasConstraintName("FK_Jugador")
                    .OnDelete(DeleteBehavior.SetNull);
-          //  builder.HasKey(tj => new { tj.JugadorId, tj.TorneoId });
+          //  builder.HasKey(tj => new { tj.JugadorId, tj.TorneoId }); tfxdhkghfkjgfkjgghgh
             builder.HasOne(tj => tj.Torneo)
                    .WithMany(tj => tj.TorneoJugador)
                    .HasForeignKey(tj => tj.TorneoId)

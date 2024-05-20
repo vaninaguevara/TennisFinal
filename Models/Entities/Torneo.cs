@@ -9,9 +9,7 @@ namespace Tennis.Models
 {
     public class Torneo
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public string Nombre { get; set; }
         public int? CreatedByUserId { get; set; }
         public string Genero { get; set; }
@@ -19,7 +17,6 @@ namespace Tennis.Models
         public virtual List<Partido>? Partido { get; set; }
         public DateTime? FechaTermino { get; set; }
         public int? IdJugadorW { get; set; }
-        [ForeignKey(nameof(IdJugadorW))]
         public virtual Jugador? JugadorW { get; set; }
     }
     public class TorneoConfig : IEntityTypeConfiguration<Torneo>

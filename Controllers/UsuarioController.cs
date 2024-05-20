@@ -3,6 +3,7 @@ using Tennis.API.Models.Request;
 using Tennis.API.Services.Interfaces;
 using Tennis.Services.Interfaces;
 using Tennis.API.Models.Request;
+using Tennis.Models.Request;
 
 namespace Tennis.Controllers
 {
@@ -30,7 +31,7 @@ namespace Tennis.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> LoginAsync(UsuarioRequest usuarioRequest)
+        public async Task<IActionResult> LoginAsync(UsuarioLoginRequest usuarioRequest)
         {
             var userValidado = await _usuarioService.ValidateUserAsync(usuarioRequest);
 

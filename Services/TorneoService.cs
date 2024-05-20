@@ -25,9 +25,25 @@ namespace Tennis.Services
                 throw new BadHttpRequestException("La cantidad de jugadores debe ser una potencia de dos.");
             }
             torneo.CreatedByUserId = userId;
-            _tennisContext.Set<Torneo>().Add(torneo);
-            int resp =  await _tennisContext.SaveChangesAsync() ;
-
+            if (torneo.Genero.ToLower().Trim() != "femenino" && torneo.Genero.ToLower().Trim() != "masculino")
+            {
+                throw new BadHttpRequestException("El torneo solo puede ser 'masculino' o 'femenino'");
+            }
+            torneo.TorneoJugador.ForEach((tj) =>
+            {
+                var jugador = _tennisContext.Set<Jugador>().Where((e) => e.Dni == tj.IdJugador).FirstOrDefault();
+                if (jugador != null)
+                {
+                    if(jugador.Genero.ToLower().Trim() != torneo.Genero.ToLower().Trim())
+                    throw new BadHttpRequestException($"El dni '{tj.IdJugador}' no corresponde al genero del torneo");
+                }
+                else
+                {
+                    throw new BadHttpRequestException($"El dni '{tj.IdJugador}' no existe o no es válido");
+                }
+            });
+            _tennisContext.Set<Torneo>().Attach(torneo);
+            int resp =  await _tennisContext.SaveChangesAsync();
             return resp > 0;
         }
         public async Task<Torneo> GetTorneo(int id)

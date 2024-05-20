@@ -2,6 +2,7 @@
 using Tennis.API.Models.Request;
 using Tennis.API.Services.Encryption;
 using Tennis.Models;
+using Tennis.Models.Request;
 using Tennis.Repository;
 using Tennis.Services.Interfaces;
 
@@ -29,6 +30,7 @@ namespace Tennis.Services
             Usuario newUsuario = new Usuario();
             newUsuario.Username = usuarioRequest.Username;
             newUsuario.Password = usuarioRequest.Password;
+            newUsuario.Rol= usuarioRequest.Rol;
             newUsuario.Password = _encryptionService.Encrypt(usuarioRequest.Password);
 
             _tennisContext.Add(newUsuario);
@@ -44,7 +46,7 @@ namespace Tennis.Services
             return user;
         }
 
-        public async Task<Usuario> ValidateUserAsync(UsuarioRequest usuarioRequest)
+        public async Task<Usuario> ValidateUserAsync(UsuarioLoginRequest usuarioRequest)
         {
             var passEncypted = _encryptionService.Encrypt(usuarioRequest.Password);
 

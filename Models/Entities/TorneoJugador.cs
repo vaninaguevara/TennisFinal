@@ -10,10 +10,10 @@ namespace Tennis.Models.Entities
         public int Id { get; set; }
 
         public int IdJugador { get; set; }
-        public virtual Jugador Jugador { get; set; }
+        public virtual Jugador? Jugador { get; set; }
 
         public int IdTorneo { get; set; }
-        public virtual Torneo Torneo { get; set; }
+        public virtual Torneo? Torneo { get; set; }
     }
     public class TorneoJugadorConfig : IEntityTypeConfiguration<TorneoJugador>
     {

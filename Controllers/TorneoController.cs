@@ -21,11 +21,40 @@ namespace Tennis.Controllers
         [HttpPost]
         public async Task<ActionResult<Torneo>> CreateTorneo (Torneo torneo)
         {
-            if(torneo.GetType() == typeof(Torneo))
+            var Rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+            if (Rol?.ToLower() == "admin")
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
-                var response = await _torneoService.CreateTorneo(torneo, int.Parse(userId));
-                return CreatedAtAction(nameof(GetTorneo), new { id = torneo.Id }, torneo);
+                if (torneo.GetType() == typeof(Torneo))
+                {
+                    var userId = User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+                    var response = await _torneoService.CreateTorneo(torneo, int.Parse(userId));
+                    return CreatedAtAction(nameof(GetTorneo), new { id = torneo.Id }, torneo);
+                }
+                else
+                {
+                    throw new Exception("Solo se admite datos para crear el torneo");
+
+                }
+            }
+            else
+            {
+                    return new ForbidResult();
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Torneo>> GetTorneo(int id)
+        {
+            var Rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+            if (Rol?.ToLower() == "admin")
+            {
+                var torneo = await _torneoService.GetTorneo(id);
+
+                if (torneo == null)
+                {
+                    throw new Exception("No se encontro el torneo");
+                }
+
+                return torneo;
             }
             else
             {
@@ -33,10 +62,10 @@ namespace Tennis.Controllers
 
             }
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Torneo>> GetTorneo(int id)
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<Torneo>> GetTorneoByNombre(string nombre)
         {
-            var torneo = await _torneoService.GetTorneo(id);
+            var torneo = await _torneoService.GetTorneoByNombre(nombre);
 
             if (torneo == null)
             {
@@ -45,23 +74,32 @@ namespace Tennis.Controllers
 
             return torneo;
         }
-        [HttpPost("IniciarTorneo/{id}")]
-        public async Task<ActionResult<TorneoTerminadoResponse>> IniciarTorneo(int id)
+        [HttpPost("IniciarTorneo/{nombre}")]
+        public async Task<ActionResult<TorneoTerminadoResponse>> IniciarTorneo(string nombre)
         {
-            var actionResult = await GetTorneo(id);
-            if (actionResult.Result is NotFoundResult)
+            var Rol = User.Claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+            if (Rol?.ToLower() == "admin")
             {
-                return NotFound($"El torneo con id '{id}' no existe.");
+                var actionResult = await GetTorneoByNombre(nombre);
+                if (actionResult.Result is NotFoundResult)
+                {
+                    return NotFound($"El torneo con nombre: '{nombre}' no existe.");
+                }
+
+                var torneo = actionResult.Value;
+                if (torneo?.JugadorW != null)
+                {
+                    return NotFound($"El torneo ya termino, el ganador es {torneo.JugadorW.Nombre + " " + torneo.JugadorW.Apellido}");
+                }
+                TorneoTerminadoResponse response = await _torneoService.IniciarTorneo(torneo);
+                return response;
+            }
+            else
+            {
+                throw new Exception("Solo se admite datos para crear el torneo");
+
             }
 
-            var torneo = actionResult.Value;
-            if (torneo?.JugadorW != null)
-            {
-                return NotFound($"El torneo ya termino, el ganador es {torneo.JugadorW.Nombre + " " + torneo.JugadorW.Apellido}");
-            }
-            TorneoTerminadoResponse response = await _torneoService.IniciarTorneo(torneo);
-            return response;
-            
         }
         [HttpGet("getTorneos/{fechaDesde}/{fechaHasta}")]
         public async Task<ActionResult<List<Torneo>>> GetTorneosByFecha(DateTime fechaDesde, DateTime fechaHasta)

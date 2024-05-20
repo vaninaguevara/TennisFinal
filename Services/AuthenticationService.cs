@@ -29,6 +29,7 @@ namespace Tennis.API.Services
             var claims = new List<Claim>()
             {
                 new Claim("Id", usuario.Id.ToString()),
+                new Claim("Rol", usuario.Rol.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Username),
                 new Claim(JwtRegisteredClaimNames.GivenName, usuario.Username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

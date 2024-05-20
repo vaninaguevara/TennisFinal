@@ -20,6 +20,10 @@ namespace Tennis.Services
 
         public async Task<bool> CreateTorneo(Torneo torneo, int userId)
         {
+            if(_tennisContext.Set<Torneo>().Where((t) => t.Nombre.ToLower() == torneo.Nombre.ToLower()).FirstOrDefault() != null) 
+            {
+                throw new BadHttpRequestException($"Ya existe un torneo con el nombre '{torneo.Nombre}'");
+            }
             if (torneo.TorneoJugador == null || !TorneoValidation.IsPowerOfTwo(torneo.TorneoJugador.Count))
             {
                 throw new BadHttpRequestException("La cantidad de jugadores debe ser una potencia de dos.");
@@ -49,6 +53,12 @@ namespace Tennis.Services
         public async Task<Torneo> GetTorneo(int id)
         {
             return await _tennisContext.Set<Torneo>().Where((e) => e.Id == id)
+                                        .Include((e) => e.TorneoJugador).ThenInclude((e) => e.Jugador)
+                                        .FirstOrDefaultAsync();
+        }
+        public async Task<Torneo> GetTorneoByNombre(string nombre)
+        {
+            return await _tennisContext.Set<Torneo>().Where((e) => e.Nombre == nombre)
                                         .Include((e) => e.TorneoJugador).ThenInclude((e) => e.Jugador)
                                         .FirstOrDefaultAsync();
         }

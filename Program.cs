@@ -13,7 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddTennisDbConfiguration();
+builder.Services.AddEcnryptionOptions();
+builder.Services.AddAuthenticationOptions();
+builder.Services.ConfigureJwt();
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IJugadorService, JugadorService>();
+builder.Services.AddScoped<ITorneoService, TorneoService>();
+builder.Services.AddScoped<CustomFilter>();
+builder.Services.AddScoped<IExceptionService, ExceptionService>();
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -25,7 +39,8 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement{
@@ -43,18 +58,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddTennisDbConfiguration();
-builder.Services.AddEcnryptionOptions();
-builder.Services.AddAuthenticationOptions();
-builder.Services.ConfigureJwt();
-
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IJugadorService, JugadorService>();
-builder.Services.AddScoped<ITorneoService, TorneoService>();
-builder.Services.AddScoped<CustomFilter>();
-builder.Services.AddScoped<IExceptionService, ExceptionService>();
-builder.Services.AddScoped<IEncryptionService, EncryptionService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 var app = builder.Build();
 

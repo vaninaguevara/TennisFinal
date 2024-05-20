@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tennis.API.Models.Request;
 using Tennis.Models;
+using Tennis.Models.Request;
 using Tennis.Repository;
 using Tennis.Services.Interfaces;
 
@@ -15,7 +16,7 @@ namespace Tennis.Services
             _tennisContext = tennisContext;
         }
 
-        public async Task<Jugador> CreateJugador(Jugador jugador)
+        public async Task<Jugador> CreateJugador(JugadorRequest jugador)
         {
             Jugador? jugadorExiste = await _tennisContext.Set<Jugador>().Where((e) => e.Dni == jugador.Dni && e.Activo == true).FirstOrDefaultAsync();
             if (jugadorExiste != null)

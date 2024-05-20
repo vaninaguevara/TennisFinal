@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Tennis.Mappers;
 using Tennis.Models;
+using Tennis.Models.Request;
+using Tennis.Models.Response;
 using Tennis.Services.Interfaces;
 
 namespace Tennis.Controllers
@@ -17,16 +20,17 @@ namespace Tennis.Controllers
             _jugadorService = jugadorService;
         }
         [HttpPost]
-        public async Task<Jugador> CreateJugador (Jugador jugador)
+        public async Task<JugadorResponse> CreateJugador (JugadorRequest jugadorRequest)
         {
-            Jugador response = await _jugadorService.CreateJugador(jugador);
-            return response;
+            Jugador response = await _jugadorService.CreateJugador(jugadorRequest);
+            var jugador = response.ToJugadorResponse();
+            return jugador;
         }
         [HttpPut]
-        public async Task<Jugador> EditJugador (Jugador jugador)
+        public async Task<JugadorResponse> EditJugador (Jugador jugador)
         {
             Jugador response = await _jugadorService.EditJugador(jugador);
-            return response;
+            return response.ToJugadorResponse();
         }
         [HttpPost, Route("Deleted/{dni}")]
         public async Task<bool> DeletedJugador(int dni)
